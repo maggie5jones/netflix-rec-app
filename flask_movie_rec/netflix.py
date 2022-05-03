@@ -5,6 +5,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import requests
 import urllib
+import os
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.metrics.pairwise import linear_kernel, cosine_similarity
 
@@ -85,50 +86,65 @@ def get_recommendations_new(title, cosine_sim=cosine_sim):
     # Return the top 10 most similar movies
     return netflix_overall['title'].iloc[movie_indices]
 
-def imdb_id_from_title(title):
-    """ return IMDB id for search string
+# all of the code below is for retrieving the movie poster to display on the front-end
 
-        Args::
-            title (str): the movie title search string
+CONFIG_PATTERN = 'http://api.themoviedb.org/3/configuration?api_key={key}'
+IMG_PATTERN = 'http://api.themoviedb.org/3/movie/{imdbid}/images?api_key={key}' 
+KEY = '1a3b037b3193bfd1535049e30f4d4890'
+            
+def _get_json(url):
+    r = requests.get(url)
+    return r.json()
+    
+def _download_images(urls, path='.'):
+    """download all images in list 'urls' to 'path' """
 
-        Returns: 
-            str. IMDB id, e.g., 'tt0095016' 
-            None. If no match was found
+    for nr, url in enumerate(urls):
+        r = requests.get(url)
+        filetype = r.headers['content-type'].split('/')[-1]
+        filename = 'poster_{0}.{1}'.format(nr+1,filetype)
+        filepath = os.path.join(path, filename)
+        with open(filepath,'wb') as w:
+            w.write(r.content)
+
+def get_poster_urls(imdbid):
+    """ return image urls of posters for IMDB id
+        returns all poster images from 'themoviedb.org'. Uses the
+        maximum available size. 
+        Args:
+            imdbid (str): IMDB id of the movie
+        Returns:
+            list: list of urls to the images
+    """
+    config = _get_json(CONFIG_PATTERN.format(key=KEY))
+    base_url = config['images']['base_url']
+    sizes = config['images']['poster_sizes']
 
     """
-    pattern = 'http://www.imdb.com/xml/find?json=1&nr=1&tt=on&q={movie_title}'
-    url = pattern.format(movie_title=urllib.quote(title))
-    r = requests.get(url)
-    res = r.json()
-    # sections in descending order or preference
-    for section in ['popular','exact','substring']:
-        key = 'title_' + section 
-        if key in res:
-            return res[key][0]['id']
+        'sizes' should be sorted in ascending order, so
+            max_size = sizes[-1]
+        should get the largest size as well.        
+    """
+    def size_str_to_int(x):
+        return float("inf") if x == 'original' else int(x[1:])
+    max_size = max(sizes, key=size_str_to_int)
 
-def get_movie_poster(title):
-    imdbid = imdb_id_from_title(title)
-    IMG_PATTERN = f'http://api.themoviedb.ord/3/movie/{imdbid}/images?api_key=1a3b037b3193bfd1535049e30f4d4890'
-    r = requests.get(IMG_PATTERN.format(key=KEY, imdbid=imdbid))
-    api_response = r.json()
-    
-    base_url = 'http://d3gtl9l2a4fn1j.cloudfront.net/t/p/'
-    max_size = 'original'
-    rel_path = 'mc7MubOLcIw3MDvnuQFrO9psfCa.jpg'
-    url = 'http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/mc7MubOLcIw3MDvnuQFrO9psfCa.jpg'
-
-    poster = api_response['posters'][0]
+    posters = _get_json(IMG_PATTERN.format(key=KEY,imdbid=imdbid))['posters']
     poster_urls = []
     for poster in posters:
         rel_path = poster['file_path']
         url = "{0}{1}{2}".format(base_url, max_size, rel_path)
-        poster_urls.append(url)
+        poster_urls.append(url) 
 
-    for nr, url in enumerate(poster_urls):
-        r = requests.get(url)
-        filetype = r.headers['content-type'].split('/')[-1]
-        filename = 'poster_{0}.{1}'.format(nr + 1, filetype)
-        with open(filename, 'wb') as w:
-            w.write(r.content)
+    return poster_urls
+
+def tmdb_posters(imdbid, count=None, outpath='.'):    
+    urls = get_poster_urls(imdbid)
+    if count is not None:
+        urls = urls[:count]
+    _download_images(urls, outpath)
+
+if __name__=="__main__":
+    tmdb_posters('tt0095016')
 
 get_movie_poster('Jurassic Park')
