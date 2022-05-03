@@ -10,6 +10,11 @@ def index():
     IMG_PATTERN = f'http://api.themoviedb.ord/3/movie/{imdbid}/images?api_key=1a3b037b3193bfd1535049e30f4d4890'
     r = requests.get(IMG_PATTERN.format(key=KEY, imdbid=imdbid))
     api_response = r.json()
+    
+    base_url = 'http://d3gtl9l2a4fn1j.cloudfront.net/t/p/'
+    max_size = 'original'
+    rel_path = 'mc7MubOLcIw3MDvnuQFrO9psfCa.jpg'
+    url = 'http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/mc7MubOLcIw3MDvnuQFrO9psfCa.jpg'
 
     poster = api_response['posters'][0]
     rel_path = poster['file_path']
