@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Search YouTube</title>
+    <title>Movie Recommendations</title>
 
     <!-- Bootstrap core CSS -->
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -26,7 +26,7 @@
       }
     </style>
     <!-- Custom styles for this template -->
-    <link href="album.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='album.css') }}" rel="stylesheet">
   </head>
   <body>
 
@@ -34,14 +34,14 @@
 
   <section class="jumbotron text-center">
     <div class="container">
-      <h1 class="jumbotron-heading">Search YouTube</h1>
-      <p class="lead text-muted">Get the top nine results on YouTube for your query!</p>
+      <h1 class="jumbotron-heading">Movie Recommendations</h1>
+      <p class="lead text-muted">Get the nine most similar movies on Netflix to your favorite!</p>
       <div class="input-group mb-3">
         <input type="text" class="form-control" aria-label="Username">
       </div>
       <p>
-        <a href="#" class="btn btn-primary my-2">YouTube Search</a>
-        <a href="#" class="btn btn-secondary my-2">I'm Feeling Lucky</a>
+        <a href="#" class="btn btn-primary my-2">Netlfix Search</a>
+        <a href="#" class="btn btn-secondary my-2">Random Movie</a>
       </p>
     </div>
   </section>
@@ -51,126 +51,126 @@
       <div class="row">
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
-            <img class="bd-placeholder-img card-img-top" width="100%" height="225" src="https://via.placeholder.com/480x360" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
+            <img class="bd-placeholder-img card-img-top" width="100%" height="400" src="https://via.placeholder.com/480x640" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
             <div class="card-body">
-              <p class="card-text">Video title</p>
+              <p class="card-text">Movie title</p>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
                   <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
                 </div>
-                <small class="text-muted">9 mins</small>
+                <small class="text-muted">length</small>
               </div>
             </div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
-            <img class="bd-placeholder-img card-img-top" width="100%" height="225" src="https://via.placeholder.com/480x360" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
+            <img class="bd-placeholder-img card-img-top" width="100%" height="400" src="https://via.placeholder.com/480x640" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
             <div class="card-body">
-              <p class="card-text">Video title</p>
+              <p class="card-text">Movie title</p>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
                   <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
                 </div>
-                <small class="text-muted">9 mins</small>
+                <small class="text-muted">length</small>
               </div>
             </div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
-            <img class="bd-placeholder-img card-img-top" width="100%" height="225" src="https://via.placeholder.com/480x360" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
+            <img class="bd-placeholder-img card-img-top" width="100%" height="400" src="https://via.placeholder.com/480x640" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
             <div class="card-body">
-              <p class="card-text">Video title</p>
+              <p class="card-text">Movie title</p>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
                   <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
                 </div>
-                <small class="text-muted">9 mins</small>
+                <small class="text-muted">length</small>
               </div>
             </div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
-            <img class="bd-placeholder-img card-img-top" width="100%" height="225" src="https://via.placeholder.com/480x360" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
+            <img class="bd-placeholder-img card-img-top" width="100%" height="400" src="https://via.placeholder.com/480x640" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
             <div class="card-body">
-              <p class="card-text">Video title</p>
+              <p class="card-text">Movie title</p>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
                   <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
                 </div>
-                <small class="text-muted">9 mins</small>
+                <small class="text-muted">length</small>
               </div>
             </div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
-            <img class="bd-placeholder-img card-img-top" width="100%" height="225" src="https://via.placeholder.com/480x360" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
+            <img class="bd-placeholder-img card-img-top" width="100%" height="400" src="https://via.placeholder.com/480x640" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
             <div class="card-body">
-              <p class="card-text">Video title</p>
+              <p class="card-text">Movie title</p>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
                   <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
                 </div>
-                <small class="text-muted">9 mins</small>
+                <small class="text-muted">length</small>
               </div>
             </div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
-            <img class="bd-placeholder-img card-img-top" width="100%" height="225" src="https://via.placeholder.com/480x360" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
+            <img class="bd-placeholder-img card-img-top" width="100%" height="400" src="https://via.placeholder.com/480x640" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
             <div class="card-body">
-              <p class="card-text">Video title</p>
+              <p class="card-text">Movie title</p>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
                   <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
                 </div>
-                <small class="text-muted">9 mins</small>
+                <small class="text-muted">length</small>
               </div>
             </div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
-            <img class="bd-placeholder-img card-img-top" width="100%" height="225" src="https://via.placeholder.com/480x360" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
+            <img class="bd-placeholder-img card-img-top" width="100%" height="400" src="https://via.placeholder.com/480x640" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
             <div class="card-body">
-              <p class="card-text">Video title</p>
+              <p class="card-text">Movie title</p>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
                   <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
                 </div>
-                <small class="text-muted">9 mins</small>
+                <small class="text-muted">length</small>
               </div>
             </div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
-            <img class="bd-placeholder-img card-img-top" width="100%" height="225" src="https://via.placeholder.com/480x360" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
+            <img class="bd-placeholder-img card-img-top" width="100%" height="400" src="https://via.placeholder.com/480x640" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
             <div class="card-body">
-              <p class="card-text">Video title</p>
+              <p class="card-text">Movie title</p>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
                   <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
                 </div>
-                <small class="text-muted">9 mins</small>
+                <small class="text-muted">length</small>
               </div>
             </div>
           </div>
         </div>
         <div class="col-md-4">
           <div class="card mb-4 shadow-sm">
-            <img class="bd-placeholder-img card-img-top" width="100%" height="225" src="https://via.placeholder.com/480x360" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
+            <img class="bd-placeholder-img card-img-top" width="100%" height="400" src="https://via.placeholder.com/480x640" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"></img>
             <div class="card-body">
-              <p class="card-text">Video title</p>
+              <p class="card-text">Movie title</p>
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
                   <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
                 </div>
-                <small class="text-muted">9 mins</small>
+                <small class="text-muted">length</small>
               </div>
             </div>
           </div>
