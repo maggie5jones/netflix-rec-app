@@ -2,14 +2,18 @@ import numpy as np # linear algebra
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)import seaborn as sns
 import matplotlib.pyplot as plt
 import seaborn as sns
-import matplotlib.pyplot as plt
 import requests
 import urllib
 import os
+import cinemagoer
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.metrics.pairwise import linear_kernel, cosine_similarity
 
 netflix_overall=pd.read_csv("netflix_titles.csv")
+
+def random_movie():
+    movie = netflix_overall.sample()
+    return movie['title'].tolist()
 
 #removing stopwords
 tfidf = TfidfVectorizer(stop_words='english')
@@ -84,7 +88,8 @@ def get_recommendations_new(title, cosine_sim=cosine_sim):
     movie_indices = [i[0] for i in sim_scores]
 
     # Return the top 10 most similar movies
-    return netflix_overall['title'].iloc[movie_indices]
+    titles = netflix_overall['title'].iloc[movie_indices].tolist()
+    return titles
 
 # all of the code below is for retrieving the movie poster to display on the front-end
 
@@ -98,7 +103,7 @@ def imdb_id_from_title(title):
             None. If no match was found
     """
     pattern = 'http://www.imdb.com/xml/find?json=1&nr=1&tt=on&q={movie_title}'
-    url = pattern.format(movie_title=urllib.quote(title))
+    url = pattern.format(movie_title=title)
     r = requests.get(url)
     res = r.json()
     # sections in descending order or preference
@@ -107,10 +112,11 @@ def imdb_id_from_title(title):
         if key in res:
             return res[key][0]['id']
 
+print(imdb_id_from_title('Inception'))
+
 CONFIG_PATTERN = 'http://api.themoviedb.org/3/configuration?api_key={key}'
 IMG_PATTERN = 'http://api.themoviedb.org/3/movie/{imdbid}/images?api_key={key}' 
 KEY = '1a3b037b3193bfd1535049e30f4d4890'
-IMDBID = imdb_id_from_title(title)
             
 def _get_json(url):
     r = requests.get(url)
@@ -163,8 +169,3 @@ def tmdb_posters(imdbid, count=None, outpath='.'):
     if count is not None:
         urls = urls[:count]
     _download_images(urls, outpath)
-
-if __name__=="__main__":
-    tmdb_posters('tt0095016')
-
-get_movie_poster('Jurassic Park')

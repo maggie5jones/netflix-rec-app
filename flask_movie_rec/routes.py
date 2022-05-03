@@ -6,7 +6,7 @@ main = Blueprint('main', __name__)
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
-    movies = []
+    movies = get_recommendations_new(user_input_title)
 
     if request.method == 'POST':
         #TODO: write things here to incorporate backend code
