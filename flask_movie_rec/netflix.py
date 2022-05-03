@@ -105,3 +105,30 @@ def imdb_id_from_title(title):
         key = 'title_' + section 
         if key in res:
             return res[key][0]['id']
+
+def get_movie_poster(title):
+    imdbid = imdb_id_from_title(title)
+    IMG_PATTERN = f'http://api.themoviedb.ord/3/movie/{imdbid}/images?api_key=1a3b037b3193bfd1535049e30f4d4890'
+    r = requests.get(IMG_PATTERN.format(key=KEY, imdbid=imdbid))
+    api_response = r.json()
+    
+    base_url = 'http://d3gtl9l2a4fn1j.cloudfront.net/t/p/'
+    max_size = 'original'
+    rel_path = 'mc7MubOLcIw3MDvnuQFrO9psfCa.jpg'
+    url = 'http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/mc7MubOLcIw3MDvnuQFrO9psfCa.jpg'
+
+    poster = api_response['posters'][0]
+    poster_urls = []
+    for poster in posters:
+        rel_path = poster['file_path']
+        url = "{0}{1}{2}".format(base_url, max_size, rel_path)
+        poster_urls.append(url)
+
+    for nr, url in enumerate(poster_urls):
+        r = requests.get(url)
+        filetype = r.headers['content-type'].split('/')[-1]
+        filename = 'poster_{0}.{1}'.format(nr + 1, filetype)
+        with open(filename, 'wb') as w:
+            w.write(r.content)
+
+get_movie_poster('Jurassic Park')
