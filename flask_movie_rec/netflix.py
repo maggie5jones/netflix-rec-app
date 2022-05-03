@@ -82,5 +82,3 @@ def get_recommendations_new(title, cosine_sim=cosine_sim):
 
     # Return the top 10 most similar movies
     return netflix_overall['title'].iloc[movie_indices]
-
-
