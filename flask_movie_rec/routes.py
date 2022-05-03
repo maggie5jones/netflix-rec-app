@@ -6,7 +6,14 @@ main = Blueprint('main', __name__)
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
-    poster_url = 'http://api.themoviedb.ord/3/movie/{imdbid}/images?api_key=1a3b037b3193bfd1535049e30f4d4890'
+    imdbid = imdb_id_from_title(title)
+    IMG_PATTERN = f'http://api.themoviedb.ord/3/movie/{imdbid}/images?api_key=1a3b037b3193bfd1535049e30f4d4890'
+    r = requests.get(IMG_PATTERN.format(key=KEY, imdbid=imdbid))
+    api_response = r.json()
+
+    poster = api_response['posters'][0]
+    rel_path = poster['file_path']
+    poster_url = "{0}{1}{2}".format(base_url, max_size, rel_path)
 
     movies = []
 
