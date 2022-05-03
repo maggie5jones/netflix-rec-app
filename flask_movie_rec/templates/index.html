@@ -36,13 +36,15 @@
     <div class="container">
       <h1 class="jumbotron-heading">Movie Recommendations</h1>
       <p class="lead text-muted">Get the nine most similar movies on Netflix to your favorite!</p>
+      <form method="POST">
       <div class="input-group mb-3">
-        <input type="text" class="form-control" aria-label="Username">
+        <input type="text" name = "query" class="form-control">
       </div>
       <p>
-        <a href="#" class="btn btn-primary my-2">Netlfix Search</a>
-        <a href="#" class="btn btn-secondary my-2">Random Movie</a>
+        <button type = "submit" name = "submit" value = "search" class="btn btn-primary my-2">Netlfix Search</button>
+        <button type = "submit" name = "submit" value = "random" class="btn btn-secondary my-2">Random Movie</button>
       </p>
+    </form>
     </div>
   </section>
 
