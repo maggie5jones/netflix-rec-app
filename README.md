@@ -6,7 +6,7 @@ to download posters: https://youtu.be/T2kvOGq7P18
 
 to run:
 
-pip install everything? (on lab computer)\\
-cd subdir\\
-pip install python-dotenv\\
+pip install everything? (on lab computer) \
+cd subdir \
+pip install python-dotenv \
 python -m flask run
