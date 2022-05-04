@@ -111,17 +111,17 @@ def imdb_ids_from_title(movies):
 
         r = requests.get(url)
         data = r.json()
-        imdb_id = (data['imdbID'])
-        imdb_ids.append(imdb_id)
+        if 'imdbID' in data:    
+            imdb_id = (data['imdbID']) 
+            imdb_ids.append(imdb_id)
+        else:
+            imdb_ids.append(0)
     return imdb_ids
-
-# print(get_recommendations_new('Inception'))
-# print(imdb_ids_from_title(get_recommendations_new('Inception')))
 
 def download_posters(movies):
     for imdb_id in movies:
-        filename = imdb_id + '_img.png'
-        save_path = './static'
+        filename = str(imdb_id) + '_img.png'
+        save_path = '/Users/Guest/Desktop/181final/flask_movie_rec/static'
         completeName = os.path.join(save_path, filename)
 
         new_url = f'http://img.omdbapi.com/?i={imdb_id}&apikey=aa106b0d'

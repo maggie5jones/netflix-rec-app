@@ -1,4 +1,5 @@
 import requests
+from pathlib import Path
 from flask import Blueprint, render_template, current_app, request, url_for
 from . import netflix
 
@@ -12,7 +13,8 @@ def index():
     if request.method == 'POST':
         if request.form.get('submit') == 'random':
             results = netflix.random_movies() 
-            ids = netflix.imdb_ids_from_title(results)
+            print(results)
+            ids = netflix.imdb_ids_from_title(results) # key error from this call
             durations = netflix.get_durations(results)
             netflix.download_posters(ids)
         else: 
@@ -23,14 +25,29 @@ def index():
             netflix.download_posters(ids)
 
         for i in range(len(results)):
-            movie_data = {
-                'id': ids[i],
-                #TODO: url if possible
-                'url': '',
-                'poster': url_for('static', filename='up.png'), # f'{ids[i]}_img.png'
-                'duration': durations[i],
-                'title': results[i],
-            }
+            path = Path(f'/Users/Guest/Desktop/181final/flask_movie_rec/static/{ids[i]}_img.png')
+            if path.is_file():
+                if ids[i] != 0:
+                    movie_data = {
+                        'id': ids[i],
+                        'poster': url_for('static', filename=f'{ids[i]}_img.png'),
+                        'duration': durations[i],
+                        'title': results[i],
+                    }
+                else:
+                    movie_data = {
+                        'id': 'not in IMDb',
+                        'poster': url_for('static', filename='template.png'),
+                        'duration': durations[i],
+                        'title': results[i],
+                    }
+            else:
+                movie_data = {
+                    'id': ids[i],
+                    'poster': url_for('static', filename='template.png'),
+                    'duration': durations[i],
+                    'title': results[i],
+                }
             movies.append(movie_data)
         
     return render_template('index.html', movies=movies)
