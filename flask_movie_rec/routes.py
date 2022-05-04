@@ -1,20 +1,30 @@
 import requests
 from flask import Blueprint, render_template, current_app, request
-from ./netflix.py import get_recommendations_new
+# from . import netflix.get_recommendations_new, netflix.get_durations
 
 main = Blueprint('main', __name__)
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
-    movies = get_recommendations_new(user_input_title)
+    movies = []
 
     if request.method == 'POST':
-        #TODO: write things here to incorporate backend code
-        results = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-
-        #TODO: loop through items from results
-        for result in results:
-            movie_data = 10
+        if request.form.get('submit') == 'random':
+            results = random_movies() 
+        else if request.form.get('submit') == 'query':
+            title = request.form.get('query')
+            results = get_recommendations_new(title)
+        
+        for i in range(len(results)):
+            movie_data = {
+                'id': imdb_id_from_title(results[i]),
+                #TODO: url if possible
+                'url': '',
+                #TODO: poster!
+                'poster': '',
+                'duration': (get_durations(results))[i],
+                'title': results[i],
+            }
             movies.append(movie_data)
 
     return render_template('index.html', movies=movies)

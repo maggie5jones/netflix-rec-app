@@ -1,19 +1,20 @@
 import numpy as np # linear algebra
-import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)import seaborn as sns
-import matplotlib.pyplot as plt
-import seaborn as sns
+import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 import requests
 import urllib
 import os
-import cinemagoer
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.metrics.pairwise import linear_kernel, cosine_similarity
 
 netflix_overall=pd.read_csv("netflix_titles.csv")
 
-def random_movie():
-    movie = netflix_overall.sample()
-    return movie['title'].tolist()
+def random_movies():
+    movies = []
+    for i in range(9):
+        movie = netflix_overall.sample()
+        movies.append(movie['title'].tolist())
+    random = [movie for sublist in movies for movie in sublist]
+    return random
 
 #removing stopwords
 tfidf = TfidfVectorizer(stop_words='english')
@@ -81,8 +82,8 @@ def get_recommendations_new(title, cosine_sim=cosine_sim):
     # Sort the movies based on the similarity scores
     sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
 
-    # Get the scores of the 10 most similar movies
-    sim_scores = sim_scores[1:11]
+    # Get the scores of the 9 most similar movies
+    sim_scores = sim_scores[1:10]
 
     # Get the movie indices
     movie_indices = [i[0] for i in sim_scores]
@@ -90,6 +91,16 @@ def get_recommendations_new(title, cosine_sim=cosine_sim):
     # Return the top 10 most similar movies
     titles = netflix_overall['title'].iloc[movie_indices].tolist()
     return titles
+
+def get_durations(titles):
+    old = []
+    for title in titles:
+        #titles = netflix_overall['title'].iloc[movie_indices].tolist()
+        found = netflix_overall.loc[netflix_overall['title'] == title]
+        dur = found['duration'].tolist()
+        old.append(dur)
+    durations = [movie for sublist in old for movie in sublist]
+    return durations
 
 # all of the code below is for retrieving the movie poster to display on the front-end
 
@@ -112,7 +123,6 @@ def imdb_id_from_title(title):
         if key in res:
             return res[key][0]['id']
 
-print(imdb_id_from_title('Inception'))
 
 CONFIG_PATTERN = 'http://api.themoviedb.org/3/configuration?api_key={key}'
 IMG_PATTERN = 'http://api.themoviedb.org/3/movie/{imdbid}/images?api_key={key}' 
