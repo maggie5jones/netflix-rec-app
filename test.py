@@ -1,62 +1,28 @@
 import requests
-import urllib
+# import os
 
-def imdb_id_from_title(title):
-    """ return IMDB id for search string
+# # tt1772240 = Inception
 
-        Args::
-            title (str): the movie title search string
+# imdb_id = 'tt1772240'
 
-        Returns: 
-            str. IMDB id, e.g., 'tt0095016' 
-            None. If no match was found
+# filename = imdb_id + '_img.png'
+# save_path = './flask_movie_rec/static'
+# completeName = os.path.join(save_path, filename)
 
-    """
-    pattern = 'http://www.imdb.com/xml/find?json=1&nr=1&tt=on&q={movie_title}'
-    url = pattern.format(movie_title=urllib.quote(title))
-    r = requests.get(url)
-    res = r.json()
-    # sections in descending order or preference
-    for section in ['popular','exact','substring']:
-        key = 'title_' + section 
-        if key in res:
-            return res[key][0]['id']
+# new_url = f'http://img.omdbapi.com/?i={imdb_id}&apikey=aa106b0d'
 
-print(imdb_id_from_title('Inception'))
+# response = requests.get(new_url)
 
-CONFIG_PATTERN = 'http://api.themoviedb.org/3/configuration?api_key={key}'
-KEY = '1a3b037b3193bfd1535049e30f4d4890'
+# file = open(completeName, "wb")
+# file.write(response.content)
+# file.close()
 
-url = CONFIG_PATTERN.format(key=KEY)
+# # /Users/Guest/Desktop/181final/flask_movie_rec/static/tt1772240_img.png
+
+url = f"http://www.omdbapi.com/?t=3%&apikey=aa106b0d"
+
 r = requests.get(url)
-config = r.json()
+data = r.json()
+imdb_id = (data['imdbID'])
 
-base_url = config['images']['base_url']
-sizes = config['images']['poster_sizes']
-
-"""
-    'sizes' should be sorted in ascending order, so
-        max_size = sizes[-1]
-    should get the largest size as well.        
-"""
-def size_str_to_int(x):
-    return float("inf") if x == 'original' else int(x[1:])
-
-max_size = max(sizes, key=size_str_to_int)
-
-IMG_PATTERN = 'http://api.themoviedb.org/3/movie/{imdbid}/images?api_key={key}' 
-r = requests.get(IMG_PATTERN.format(key=KEY,imdbid='tt0095016'))
-api_response = r.json()
-
-base_url = 'http://d3gtl9l2a4fn1j.cloudfront.net/t/p/'
-max_size = 'original'
-rel_path = 'mc7MubOLcIw3MDvnuQFrO9psfCa.jpg'
-url = 'http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/mc7MubOLcIw3MDvnuQFrO9psfCa.jpg'
-
-posters = api_response['posters']
-poster_urls = []
-
-for poster in posters:
-    rel_path = poster['file_path']
-    url = "{0}{1}{2}".format(base_url, max_size, rel_path)
-    poster_urls.append(url)
+print(imdb_id)

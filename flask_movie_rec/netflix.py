@@ -1,7 +1,7 @@
 import numpy as np # linear algebra
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
-import requests
 import urllib
+import requests
 import os
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.metrics.pairwise import linear_kernel, cosine_similarity
@@ -104,78 +104,29 @@ def get_durations(titles):
 
 # all of the code below is for retrieving the movie poster to display on the front-end
 
-def imdb_id_from_title(title):
-    """ return IMDb movie id for search string
-        
-        Args::
-            title (str): the movie title search string
-        Returns: 
-            str. IMDB id, e.g., 'tt0095016' 
-            None. If no match was found
-    """
-    pattern = 'http://www.imdb.com/xml/find?json=1&nr=1&tt=on&q={movie_title}'
-    url = pattern.format(movie_title=title)
-    r = requests.get(url)
-    res = r.json()
-    # sections in descending order or preference
-    for section in ['popular','exact','substring']:
-        key = 'title_' + section 
-        if key in res:
-            return res[key][0]['id']
+def imdb_ids_from_title(movies):
+    imdb_ids = []
+    for title in movies:
+        url = f"http://www.omdbapi.com/?t={title}&apikey=aa106b0d"
 
-
-CONFIG_PATTERN = 'http://api.themoviedb.org/3/configuration?api_key={key}'
-IMG_PATTERN = 'http://api.themoviedb.org/3/movie/{imdbid}/images?api_key={key}' 
-KEY = '1a3b037b3193bfd1535049e30f4d4890'
-            
-def _get_json(url):
-    r = requests.get(url)
-    return r.json()
-    
-def _download_images(urls, path='.'):
-    """download all images in list 'urls' to 'path' """
-
-    for nr, url in enumerate(urls):
         r = requests.get(url)
-        filetype = r.headers['content-type'].split('/')[-1]
-        filename = 'poster_{0}.{1}'.format(nr+1,filetype)
-        filepath = os.path.join(path, filename)
-        with open(filepath,'wb') as w:
-            w.write(r.content)
+        data = r.json()
+        imdb_id = (data['imdbID'])
+        imdb_ids.append(imdb_id)
+    return imdb_ids
 
-def get_poster_urls(imdbid):
-    """ return image urls of posters for IMDB id
-        returns all poster images from 'themoviedb.org'. Uses the
-        maximum available size. 
-        Args:
-            imdbid (str): IMDB id of the movie
-        Returns:
-            list: list of urls to the images
-    """
-    config = _get_json(CONFIG_PATTERN.format(key=KEY))
-    base_url = config['images']['base_url']
-    sizes = config['images']['poster_sizes']
+# print(get_recommendations_new('Inception'))
+# print(imdb_ids_from_title(get_recommendations_new('Inception')))
 
-    """
-        'sizes' should be sorted in ascending order, so
-            max_size = sizes[-1]
-        should get the largest size as well.        
-    """
-    def size_str_to_int(x):
-        return float("inf") if x == 'original' else int(x[1:])
-    max_size = max(sizes, key=size_str_to_int)
+def download_posters(movies):
+    for imdb_id in movies:
+        filename = imdb_id + '_img.png'
+        save_path = './static'
+        completeName = os.path.join(save_path, filename)
 
-    posters = _get_json(IMG_PATTERN.format(key=KEY,imdbid=imdbid))['posters']
-    poster_urls = []
-    for poster in posters:
-        rel_path = poster['file_path']
-        url = "{0}{1}{2}".format(base_url, max_size, rel_path)
-        poster_urls.append(url) 
+        new_url = f'http://img.omdbapi.com/?i={imdb_id}&apikey=aa106b0d'
+        response = requests.get(new_url)
 
-    return poster_urls
-
-def tmdb_posters(imdbid, count=None, outpath='.'):    
-    urls = get_poster_urls(imdbid)
-    if count is not None:
-        urls = urls[:count]
-    _download_images(urls, outpath)
+        file = open(completeName, "wb")
+        file.write(response.content)
+        file.close()
