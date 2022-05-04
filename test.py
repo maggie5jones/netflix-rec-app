@@ -1,35 +1,62 @@
-# import movieposters as mp
+import requests
+import urllib
 
-# link = mp.get_poster(title='breakfast club')
-# link = mp.get_poster(id='tt0088847')  # can also be found using movie's id
-# link = mp.get_poster(id=88847)
+def imdb_id_from_title(title):
+    """ return IMDB id for search string
 
-# print(link)
-import pandas as pd
+        Args::
+            title (str): the movie title search string
 
-netflix_overall=pd.read_csv("netflix_titles.csv")
+        Returns: 
+            str. IMDB id, e.g., 'tt0095016' 
+            None. If no match was found
 
-tester = ['Til Death Do Us Part', 'Apollo 18', 'Incarnate', 'Black Mirror', 'Transformers: Cyberverse', 'Abby Sen', 'Candyflip', 'Altered Carbon', 'Dark']
+    """
+    pattern = 'http://www.imdb.com/xml/find?json=1&nr=1&tt=on&q={movie_title}'
+    url = pattern.format(movie_title=urllib.quote(title))
+    r = requests.get(url)
+    res = r.json()
+    # sections in descending order or preference
+    for section in ['popular','exact','substring']:
+        key = 'title_' + section 
+        if key in res:
+            return res[key][0]['id']
 
-def get_durations(titles):
-    old = []
-    for title in titles:
-        #titles = netflix_overall['title'].iloc[movie_indices].tolist()
-        found = netflix_overall.loc[netflix_overall['title'] == title]
-        dur = found['duration'].tolist()
-        old.append(dur)
-    durations = [movie for sublist in old for movie in sublist]
-    return durations
+print(imdb_id_from_title('Inception'))
 
-# testy = netflix_overall.loc[netflix_overall['title'] == 'Inception']
-# print(testy['duration'].tolist())
+CONFIG_PATTERN = 'http://api.themoviedb.org/3/configuration?api_key={key}'
+KEY = '1a3b037b3193bfd1535049e30f4d4890'
 
-def random_movies():
-    movies = []
-    for i in range(9):
-        movie = netflix_overall.sample()
-        movies.append(movie['title'].tolist())
-    random = [movie for sublist in movies for movie in sublist]
-    return random
+url = CONFIG_PATTERN.format(key=KEY)
+r = requests.get(url)
+config = r.json()
 
-print(random_movies())
+base_url = config['images']['base_url']
+sizes = config['images']['poster_sizes']
+
+"""
+    'sizes' should be sorted in ascending order, so
+        max_size = sizes[-1]
+    should get the largest size as well.        
+"""
+def size_str_to_int(x):
+    return float("inf") if x == 'original' else int(x[1:])
+
+max_size = max(sizes, key=size_str_to_int)
+
+IMG_PATTERN = 'http://api.themoviedb.org/3/movie/{imdbid}/images?api_key={key}' 
+r = requests.get(IMG_PATTERN.format(key=KEY,imdbid='tt0095016'))
+api_response = r.json()
+
+base_url = 'http://d3gtl9l2a4fn1j.cloudfront.net/t/p/'
+max_size = 'original'
+rel_path = 'mc7MubOLcIw3MDvnuQFrO9psfCa.jpg'
+url = 'http://d3gtl9l2a4fn1j.cloudfront.net/t/p/original/mc7MubOLcIw3MDvnuQFrO9psfCa.jpg'
+
+posters = api_response['posters']
+poster_urls = []
+
+for poster in posters:
+    rel_path = poster['file_path']
+    url = "{0}{1}{2}".format(base_url, max_size, rel_path)
+    poster_urls.append(url)
