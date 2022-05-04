@@ -10,7 +10,7 @@ cd subdir \
 pip install python-dotenv \
 python -m flask run
 
-TO DO: \
+TO DO: 
 
-- KeyError: 'imdbID' when random movies is run \
+- KeyError: 'imdbID' when random movies is run 
 - images not downloading properly (at all) when netflix search is run
